@@ -3,6 +3,19 @@
   "name": "I am using oppo a38 colorOS",
   "createdAt": "2026-11-27T08:06:17.250Z",
   "filename": "58bb46fc-ca93-4038-a997-a659545d43f0.json",
-  "geminiStarted": false,
-  "messages": []
+  "geminiStarted": true,
+  "messages": [
+    {
+      "id": "01d39d47-5e2e-46a6-a245-f39495c7f41e",
+      "role": "user",
+      "content": "I am using oppo a38 colorOS 15 and the heytap shelf app isn't working well it is not showing any widgets can you fix all the issues in this app please and make it more compatible with my device and Android system.",
+      "status": "pending",
+      "model": "gemini-3.8-flash-high",
+      "client_type": "gemini-bridge",
+      "parent_message_id": null,
+      "created_at": "2026-11-27T08:06:18.821Z",
+      "sender": "ios",
+      "is_cancelled": false
+    }
+  ]
 }
