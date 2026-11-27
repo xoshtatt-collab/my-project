@@ -16,6 +16,18 @@
       "created_at": "2026-11-27T08:06:18.821Z",
       "sender": "ios",
       "is_cancelled": false
+    },
+    {
+      "id": "0271fef9-b80a-4fc8-ba25-1a5031e982ca",
+      "role": "user",
+      "content": "i did all of this and still not working",
+      "status": "pending",
+      "model": "gemini-3.8-flash-high",
+      "client_type": "gemini-bridge",
+      "parent_message_id": null,
+      "created_at": "2026-11-27T10:00:19.704Z",
+      "sender": "ios",
+      "is_cancelled": false
     }
   ]
 }

@@ -6,13 +6,13 @@ This repository contains diagnostic steps, configuration fixes, and workarounds 
 
 ## ⚠️ Important Note About HeyTap Shelf
 
-**HeyTap Shelf** (`com.heytap.habit.analysis` / `com.coloros.widget.smallworld`) is a proprietary, closed-source system application built by OPPO / OPLUS. Its core source code is embedded within the ColorOS firmware and cannot be directly modified or patched from external repositories. 
+**HeyTap Shelf** (package name `com.coloros.assistantscreen`, also listed as **Shelf**, **Smart Assistant**, or **Breeno Feed**) is a proprietary, closed-source system application built by OPPO / OPLUS. Its core source code is embedded within the ColorOS firmware and cannot be directly modified or patched from this repository.
 
 However, widget failure on ColorOS 15 is typically caused by:
-1. **Migration cache corruption** following the ColorOS 15 upgrade.
-2. **Aggressive RAM management** on the Helio G85 platform killing background widget renderers.
-3. **Missing system permissions** (Display over apps, Autostart, Battery Unrestricted).
-4. **Mismatched HeyTap Shelf APK versions**.
+1. **A-series ColorOS 15 feature stripping**: OPPO frequently disables or limits native Shelf widget hosting on entry-level A-series builds (such as the OPPO A38) to reduce RAM usage.
+2. **Sideloaded / mismatched APK builds**: Installing a non-matching APK (such as a Chinese Breeno Feed or OnePlus build on a Global ROM) often leaves widgets blank or without `BIND_APPWIDGET` permission.
+3. **Migration cache corruption** following the ColorOS 15 upgrade.
+4. **System Launcher / Shelf process mismatch** or **missing background/widget permissions**.
 
 ---
 
@@ -77,3 +77,45 @@ OPPO frequently pushes hotfix OTA updates addressing widget and launcher bugs af
 1. Go to **Settings** > **About Device**.
 2. Tap the **ColorOS** banner at the top to check for incremental patches.
 3. If an update is available, download and install it.
+
+---
+
+### 6. Advanced Fixes (If All Steps Above Still Don't Work)
+
+If widgets still do not appear after clearing cache/data, toggling permissions, and rebooting:
+
+#### A. Force-Stop System Launcher + Verify Shelf Is Enabled
+1. Go to **Settings** > **Apps** > **App Management** > **(⋮) Show system**.
+2. Search for **Shelf** / **Smart Assistant** (`com.coloros.assistantscreen`) and confirm it is **Enabled** (not Disabled).
+3. Search for **System Launcher** and tap **Force Stop** (not just Clear Cache), so the launcher reloads the Shelf widget host connection.
+
+#### B. Check for Sideloaded / Mismatched Shelf APK
+If you manually installed a **HeyTap Shelf** APK (for example, from APKMirror):
+- A Chinese/Breeno build or ColorOS 14/16 build installed on a Global ColorOS 15 ROM will often open with empty widgets.
+- Uninstall the manually installed updates/APK from **App Management** > **Shelf** > **(⋮) Uninstall updates** (or uninstall it completely if it is a user-installed app), then test a **Global ColorOS 15** build of `com.coloros.assistantscreen`—or rely on the stock launcher's widget drawer.
+
+#### C. Grant Widget Binding & Assistant Screen via ADB (PC Required)
+If Shelf was sideloaded or stripped of widget-host privileges on ColorOS 15:
+1. Enable **Developer Options** and **USB Debugging** on your OPPO A38.
+2. Connect to a PC with ADB and check the installed package:
+   ```bash
+   adb shell pm list packages | grep -E "assistantscreen|shelf|widget|card"
+   adb shell dumpsys package com.coloros.assistantscreen | grep -E "versionName|enabled="
+   ```
+3. Grant Android `BIND_APPWIDGET` permission to Shelf:
+   ```bash
+   adb shell appwidget grantbind --package com.coloros.assistantscreen --user 0
+   ```
+4. Map the assistant/shelf screen setting (if hidden):
+   ```bash
+   adb shell settings put secure assistant_screen_type 1
+   ```
+5. Force-stop System Launcher so changes take effect:
+   ```bash
+   adb shell am force-stop com.android.launcher
+   ```
+
+#### D. OPPO A38 Hardware/Firmware Workaround
+If **Shelf** does not appear under **Settings** > **Home Screen & Lock Screen** > **Swipe down on Home screen**, or remains completely empty even with `grantbind`, your regional ColorOS 15 firmware for the OPPO A38 has likely stripped native Shelf widget hosting. In that case:
+- **Use Home Screen Widgets directly**: Pinch your Home Screen > **Widgets** to place ColorOS/Android widgets directly on your home pages.
+- **Use a third-party launcher** (such as **Lawnchair** or **Nova Launcher**) if you want full widget drawer/feed customization.
